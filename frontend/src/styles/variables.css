@@ -1,0 +1,49 @@
+:root {
+  /* Colors */
+  --dark900:#0a0a0a;
+  --dark800:#1a1a1a;
+  --dark700:#2a2a2a;
+  --electric:#2563eb;
+  --success: #00ff66;
+  --warning: #ff9800;
+  --danger: #ff4757;
+  --intermediate:#b7860b;
+  --white000:azure;
+  --white001:rgb(255, 255, 255);
+  --border:rgb(149, 149, 166);
+  --purple:rgb(195, 10, 195);
+  --yellow:yellow;
+  --green0:rgb(0, 189, 0);
+  --red000:red;
+  --cyan00:cyan;
+  --border02:#2a2f34;
+  --whitesmoke:rgb(209, 208, 208);
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  
+  /* Typography */
+  --font-primary: 'Inter', sans-serif;
+  --font-secondary: 'Poppins', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --transition-slow: 500ms ease;
+} 

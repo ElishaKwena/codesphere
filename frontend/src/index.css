@@ -1,0 +1,258 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './styles/variables.css';
+@import './styles/base.css';
+@import './styles/utilities.css';
+
+@layer base {
+  :root {
+    --dark900:#0a0a0a;
+    --dark800:#1a1a1a;
+    --dark700:#2a2a2a;
+    --electric:#2563eb;
+    --success: #00ff66;
+    --warning: #ff9800;
+    --danger: #ff4757;
+    --intermediate:#b7860b;
+    --white000:azure;
+    --white001:rgb(255, 255, 255);
+    --border:rgb(149, 149, 166);
+    --purple:rgb(195, 10, 195);
+    --yellow:yellow;
+    --green0:rgb(0, 189, 0);
+    --red000:red;
+    --cyan00:cyan;
+    --border02:#2a2f34;
+    --whitesmoke:rgb(209, 208, 208);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  html, body {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  * {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+@layer components {
+  .custom-container {
+    @apply px-4 mx-auto max-w-7xl sm:px-6 lg:px-8;
+  }
+
+  .custom-heading {
+    @apply text-4xl font-bold text-gray-900 dark:text-white;
+  }
+
+  .custom-button {
+    @apply px-4 py-2 text-white transition-colors duration-200 bg-blue-500 rounded-md hover:bg-blue-600;
+  }
+
+  .btn {
+    @apply px-4 py-2 font-medium transition-colors rounded-md;
+  }
+  
+  .btn-primary {
+    @apply text-white bg-primary hover:bg-primary/90;
+  }
+  
+  .btn-secondary {
+    @apply text-white bg-secondary hover:bg-secondary/90;
+  }
+  
+  .btn-outline {
+    @apply border border-primary text-primary hover:bg-primary hover:text-white;
+  }
+  
+  .card {
+    @apply p-6 bg-white rounded-lg shadow-md;
+  }
+  
+  .input {
+    @apply w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-electric/20 focus:border-electric;
+  }
+  
+  .label {
+    @apply block mb-1 text-sm font-medium text-gray-700;
+  }
+
+  .hero-absolute {
+    position: absolute;
+    inset: -2px;
+    background-image: linear-gradient(to right,var(--electric),var(--purple));
+    opacity: 20;
+    backdrop-filter: blur(4px);
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px cyan;
+  }
+
+  .custom-shape-divider-top-1749208262 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+    z-index: 1;
+  }
+
+  .custom-shape-divider-top-1749208262 svg {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .custom-shape-divider-top-1749208262 .shape-fill {
+    fill: var(--dark900);
+  }
+  .sharebox{
+    width: 100%;
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    border: 1px solid var(--border02);
+    row-gap: 20px;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 10px 0;
+  }
+  .sharebox a{
+      text-decoration: none;
+      position: relative;
+  }
+  .sharebox a img{
+      width: 40px;
+  }
+  .linkname{
+      width: 100px;
+      position: absolute;
+      background-color: var(--electric);
+      padding: 10px;
+      color: var(--white000);
+      text-transform: capitalize;
+      text-align: center;
+      border-radius: 50px;
+      left: -70%;
+      top: 120%;
+      display: none;
+      z-index: 5;
+  }
+  .linkname.insta{
+      background-image: linear-gradient(to top left,purple,purple,red,orange,yellow);
+  }
+  .linkname.what{
+      background-color: green;
+  }
+  .linkname.reddit{
+      background-color: orangered;
+  }
+  .linkname.twitter{
+      background-color: #000000;
+      border: 1px solid var(--border02);
+  }
+  .linkname span{
+      position: relative;
+  }
+  .sharebox .name{
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      background-color: var(--electric);
+      top: 110%;
+      left: 15%;
+      transform: rotate(45deg);
+      display: none;
+      z-index: 5;
+  }
+  .name.instaname{
+      background-color: orange;
+  }
+  .name.redditname{
+      background-color: orangered;
+  }
+  .name.twittername{
+      background-color:#000000;
+      border-left: 1px solid var(--border02);
+      border-top: 1px solid var(--border02);
+      z-index: 10;
+      width: 20px;
+      height: 20px;
+      top: 99%;
+      left: 25%;
+  }
+  .name.whatname{
+      background-color: green;
+  }
+  .sharebox a:hover .linkname,
+  .sharebox a:hover .name{
+      display: block;
+  }
+  
+  /* commnts optionstyings  */
+  
+  
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-light);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+/* .filter-btn span{
+  opacity:0;
+}
+.sort-btn span{
+  opacity:0;
+}
+.fiter-btn:hover span{
+  opacity:1;
+}
+.sort-btn:hover span{
+  opacity:1;
+} */
