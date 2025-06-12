@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import Groups from './pages/mainPages/Groups'
 import Home from './pages/mainPages/Home'
 import LandingPage from './pages/LandingPage/LandingPage'
 import Register from './pages/AuthPages/Register'
@@ -28,6 +29,7 @@ function AppContent(){
         <Route path={ROUTES.register} element={<Register />} />
         <Route path={ROUTES.login} element={<Login />} />
         <Route path={ROUTES.home} element={<Home />} />
+        <Route path={ROUTES.groups} element={<Groups />} />
         {/* Add more routes as needed */}
     </Routes>
   </>

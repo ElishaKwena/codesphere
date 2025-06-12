@@ -207,7 +207,34 @@
       display: block;
   }
   
-  /* commnts optionstyings  */
+  /* pagination settings  */
+  .pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .pagination li {
+    margin: 0 5px;
+  }
+  
+  .pagination li a {
+    display: block;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .pagination li.active a {
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+  }
+  
+  .pagination li.disabled a {
+    color: #6c757d;
+    pointer-events: none;
+  }
   
   
 }

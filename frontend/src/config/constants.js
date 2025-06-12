@@ -10,6 +10,7 @@ export const ROUTES = {
     communities: '/communities',
     jobs: '/jobs',
     blog: '/blog',
+    groups: '/groups',
     about: '/about',
     contact: '/contact',
     privacy: '/privacy',

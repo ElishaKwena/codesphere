@@ -196,7 +196,7 @@ const Navbar = () => {
                                     <h1 className='text-md font-bold text-border font-["Times_New_Roman"] text-nowrap'>DISCOVER</h1>
                                 </div>
                                 <div className="flex flex-col items-center w-full gap-0 groupbox ">
-                                    <Link to={ROUTES.home} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
+                                    <Link to={ROUTES.groups} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
                                         <span>
                                             <img src={logo} alt="" className='w-6 h-6'/>
                                         </span>
@@ -254,7 +254,7 @@ const Navbar = () => {
                             >
                                 <img src={addnew} alt="Add New" className='w-10 h-auto'/>
                             </button>
-                            <div className={`absolute left-[-150px] flex flex-col gap-1 border-2 rounded-md z-[100] top-10 border-border02 dropdown-items bg-dark800 transition-all duration-300 ease-in-out ${isAddnewOpen ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                            <div className={`absolute left-[-150px] flex flex-col gap-1 border-2 rounded-md z-[100] top-10 border-border02 dropdown-items bg-dark800 transition-all duration-300 ease-in-out ${isAddnewOpen ? 'max-h-[200px] opacity-100 pointer-events-auto' : 'pointer-events-none max-h-0 opacity-0'}`}>
                                 <Link to={ROUTES.home} className='text-sm font-semibold text-white font-["Times_New_Roman"] py-2 px-4 pr-24 hover:bg-dark700 transition-all duration-3000 flex items-center gap-2'>
                                     New Post
                                 </Link>    
@@ -274,7 +274,7 @@ const Navbar = () => {
                             >
                                 <img src={profile} alt="Profile" className='object-cover h-auto rounded-full w-14' />
                             </button>
-                            <div className={`absolute left-[-150px] flex flex-col gap-1 border-2 rounded-md z-[100] top-16 border-border02 dropdown-items bg-dark800 transition-all duration-300 ease-in-out ${isProfileOpen ? 'max-h-[200px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                            <div className={`absolute left-[-150px] flex flex-col gap-1 border-2 rounded-md z-[100] top-16 border-border02 dropdown-items bg-dark800 transition-all duration-300 ease-in-out ${isProfileOpen ? 'max-h-[200px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
                                 <Link to={ROUTES.home} className='text-sm font-semibold text-white font-["Times_New_Roman"] py-2 px-4 pr-24 hover:bg-dark700 transition-all duration-3000 flex items-center gap-2'>
                                     Your Profile
                                 </Link>    
