@@ -80,7 +80,8 @@ const Navbar = () => {
         setIsAddnewOpen(false);
         setIsProfileOpen(false);
     };
-    const toggleGroups = () => {
+    const toggleGroups = (e) => {
+        e.stopPropagation();
         setIsGroupsOpen((prev) => !prev);
         setIsExploreOpen(false);
         setIsCommunityOpen(false);
@@ -202,7 +203,7 @@ const Navbar = () => {
                                         </span>
                                         <p className='transition-all text-nowrap duration-3000'>Browse All Groups</p>
                                     </Link>  
-                                    <Link to={ROUTES.home} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
+                                    <Link to={ROUTES.usergroups} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
                                         <span>
                                             <img src={add} alt="" className='w-6 h-6'/>
                                         </span>

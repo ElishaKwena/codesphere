@@ -8,7 +8,7 @@ const Register = () => {
     return (
         <main className="w-full min-h-screen pt-0 mt-0 bg-dark900">
             <section 
-                className="w-full flex items-center justify-between min-h-screen py-6 md:py-12 px-2 sm:px-4 relative mt-[90px]"
+                className="w-full flex items-center justify-between min-h-screen py-6 md:py-12 px-2 sm:px-4 relative mt-[0px]"
                 style={{
                     backgroundImage: `url(${background})`,
                     backgroundSize: 'cover',
