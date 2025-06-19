@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.conf import settings
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, FollowerRelationshipSerializer
+from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, FollowerRelationshipSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from .models import CustomUser, FollowerRelationship
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -230,3 +230,26 @@ class FollowerRelationshipViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Not following.'}, status=status.HTTP_400_BAD_REQUEST)
         rel.delete()
         return Response({'detail': 'Unfollowed.'})
+
+class PasswordResetRequestView(APIView):
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            user = CustomUser.objects.get(email=email)
+            token = default_token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_url = f"{settings.FRONTEND_RESET_URL}{uid}/{token}/"
+            subject = "Password Reset Request"
+            message = f"Click the link below to reset your password:\n\n{reset_url}"
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+            return Response({"detail": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PasswordResetConfirmView(APIView):
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -19,6 +19,8 @@ export const ROUTES = {
     guidelines: '/guidelines',
     verify_email_sent: '/verify-email-sent',
     verify_email: '/verify-email/:uidb64/:token',
+    password_reset_request: '/reset-password',
+    password_reset_confirm: '/reset-password/:uid/:token',
 }
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001'; 

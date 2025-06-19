@@ -225,6 +225,7 @@ DEFAULT_FROM_EMAIL = 'hatblack9874@gmail.com'
 # Frontend URLs
 FRONTEND_LOGIN_URL = 'http://localhost:5174/login'
 FRONTEND_VERIFY_URL = 'http://localhost:5174/verify-email/'
+FRONTEND_RESET_URL = 'http://localhost:5174/reset-password/'
 
 
 SWAGGER_SETTINGS = {

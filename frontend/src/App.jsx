@@ -8,7 +8,8 @@ import Register from './pages/AuthPages/Register';
 import Login from './pages/AuthPages/Login';
 import VerifyEmailSent from './pages/Email/VerifyEmailSent';
 import VerifyEmail from './pages/Email/VerifyEmail';
-
+import PasswordResetRequest from './pages/AuthPages/PasswordResetRequest';
+import PasswordResetConfirm from './pages/AuthPages/PasswordResetConfirm';
 
 import { ROUTES } from './config/constants';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -35,7 +36,9 @@ function AppContent() {
     ROUTES.register,
     ROUTES.login,
     ROUTES.verify_email_sent,
-    ROUTES.verify_email
+    ROUTES.verify_email,
+    ROUTES.password_reset_request,
+    ROUTES.password_reset_confirm
   ]
   if (loading) {
     return <FullPageLoader />;
@@ -49,6 +52,8 @@ function AppContent() {
         <Route path={ROUTES.login} element={<Login />} />
         <Route path={ROUTES.verify_email_sent} element={<VerifyEmailSent />} />
         <Route path={ROUTES.verify_email} element={<VerifyEmail />} />
+        <Route path={ROUTES.password_reset_request} element={<PasswordResetRequest />} />
+        <Route path={ROUTES.password_reset_confirm} element={<PasswordResetConfirm />} />
         
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.home} element={<Home />} />

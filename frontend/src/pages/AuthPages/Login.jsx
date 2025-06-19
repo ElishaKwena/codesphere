@@ -8,6 +8,7 @@ import { useState , useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext.jsx';
 import api from '../../services/api'
+import { ROUTES } from '../../config/constants';
 
 
 const Login = () => {
@@ -124,7 +125,7 @@ const Login = () => {
                                         className="absolute right-3 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 transition-all duration-200 px-2 py-0.5 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:rounded-md text-xl z-10"
                                     ></ion-icon>
                                 </div>
-                                <Link to="/forgot-password" className="text-electric hover:underline text-sm block mt-2 text-right">
+                                <Link to={ROUTES.password_reset_request} className="text-electric hover:underline text-sm block mt-2 text-right">
                                     Forgotten password?
                                 </Link>
                                 {errors.api && (
