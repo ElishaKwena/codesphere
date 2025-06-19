@@ -17,11 +17,25 @@ import { Navigate } from 'react-router-dom';
 
 import { useAuth } from './context/AuthContext.jsx';
 
+import FullPageLoaderDemo from './components/FullPageLoaderDemo';
+import FullPageLoader from './components/FullPageLoader';
+import React, { useState, useEffect } from 'react';
+
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 2000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <FullPageLoader />;
+
   return <AppContent />; // Just render content - no providers or routers here
 }
 
 function AppContent() {
+  
   const {user, loading} = useAuth();
 
   const location = useLocation();

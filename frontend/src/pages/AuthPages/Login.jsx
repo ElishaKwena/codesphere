@@ -17,6 +17,10 @@ const Login = () => {
     const [errors, setErrors] = useState({});
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [focus, setFocus] = useState({
+        email: false,
+        password: false
+    });
     
 
     const handleChange = (e) => {
@@ -88,13 +92,19 @@ const Login = () => {
                                         name="email" 
                                         value={formData.email}
                                         onChange={handleChange}
+                                        onFocus={() => setFocus(f => ({...f, email: true}))}
+                                        onBlur={() => setFocus(f => ({...f, email: false}))}
                                         required
-                                        className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                         placeholder=" "
+                                        className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     />
                                     <label 
                                         htmlFor="email" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.email || formData.email ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         Email
                                     </label>
@@ -111,12 +121,19 @@ const Login = () => {
                                         name="password"
                                         value={formData.password}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
+                                        onFocus={() => setFocus(f => ({...f, password: true}))}
+                                        onBlur={() => setFocus(f => ({...f, password: false}))}
+                                        required
                                         placeholder=" "
+                                        className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     />
                                     <label 
                                         htmlFor="password" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.password || formData.password ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         Password
                                     </label>

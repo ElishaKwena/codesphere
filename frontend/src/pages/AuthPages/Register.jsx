@@ -20,6 +20,14 @@ const Register = () => {
     const [isSubmitting, setIsSubmitting] = useState(false); // Make sure this line exists
     const navigate = useNavigate();
 
+    const [focus, setFocus] = useState({
+        username: false,
+        handlename: false,
+        email: false,
+        password: false,
+        confirmPassword: false
+    });
+
     const handleChange = (e) =>{
         setFormData({
             ...formData,
@@ -162,13 +170,20 @@ const Register = () => {
                                         name="username" 
                                         value={formData.username}
                                         onChange={handleChange}
+                                        onFocus={() => setFocus(f => ({...f, username: true}))}
+                                        onBlur={() => setFocus(f => ({...f, username: false}))}
                                         required
+                                        placeholder=" "
                                         className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     
                                     />
                                     <label 
                                         htmlFor="name" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.username || formData.username ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         Name
                                     </label>
@@ -184,13 +199,20 @@ const Register = () => {
                                         name="handlename" 
                                         value={formData.handlename}
                                         onChange={handleChange}
+                                        onFocus={() => setFocus(f => ({...f, handlename: true}))}
+                                        onBlur={() => setFocus(f => ({...f, handlename: false}))}
                                         required
+                                        placeholder=" "
                                         className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     
                                     />
                                     <label 
                                         htmlFor="name" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.handlename || formData.handlename ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         @handlename
                                     </label>
@@ -207,12 +229,19 @@ const Register = () => {
                                         name="email" 
                                         value={formData.email}
                                         onChange={handleChange}
+                                        onFocus={() => setFocus(f => ({...f, email: true}))}
+                                        onBlur={() => setFocus(f => ({...f, email: false}))}
                                         required
+                                        placeholder=" "
                                         className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     />
                                     <label 
                                         htmlFor="email" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.email || formData.email ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         Email
                                     </label>
@@ -228,12 +257,19 @@ const Register = () => {
                                         name="password" 
                                         value={formData.password}
                                         onChange={handleChange}
+                                        onFocus={() => setFocus(f => ({...f, password: true}))}
+                                        onBlur={() => setFocus(f => ({...f, password: false}))}
                                         required
+                                        placeholder=" "
                                         className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     />
                                     <label 
                                         htmlFor="password" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.password || formData.password ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         Password
                                     </label>
@@ -250,13 +286,19 @@ const Register = () => {
                                         name="confirmPassword"
                                         value={formData.confirmPassword}
                                         onChange={handleChange}
+                                        onFocus={() => setFocus(f => ({...f, confirmPassword: true}))}
+                                        onBlur={() => setFocus(f => ({...f, confirmPassword: false}))}
                                         required
-                                        className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                         placeholder=" "
+                                        className="w-full px-4 py-3 pr-12 text-white transition-all duration-200 border-t border-b border-l-0 border-r rounded-md peer bg-white/10 backdrop-blur-md focus:outline-none focus:ring-0 border-white/20 focus:border-l-4 focus:border-l-electric"
                                     />
                                     <label 
                                         htmlFor="confirmPassword" 
-                                        className="absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3 text-white/70 peer-focus:text-electric peer-focus:-translate-y-5 peer-focus:text-sm peer-placeholder-shown:text-base peer-placeholder-shown:translate-y-0 peer-focus:bg-white/10 peer-focus:backdrop-blur-md peer-focus:font-semibold peer-focus:rounded-md"
+                                        className={
+                                            `absolute z-10 px-1 transition-all duration-200 pointer-events-none left-4 top-3
+                                            ${focus.confirmPassword || formData.confirmPassword ? '-translate-y-5 text-sm text-electric bg-white/10 backdrop-blur-md font-semibold rounded-md' : 'text-white/70'}
+                                            `
+                                        }
                                     >
                                         Confirm Password
                                     </label>

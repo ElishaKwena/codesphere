@@ -16,6 +16,8 @@ import facebook from '../../assets/icons/facebook.png'
 import instagram from '../../assets/icons/instagram.png'
 import discord from '../../assets/icons/discord.png'
 import github from '../../assets/icons/github.png'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 
 
@@ -25,6 +27,15 @@ const LandingPage = () => {
     const [communities, setCommunities] = useState(0)
     const [discussions, setDiscussions] = useState(0)
     const bannerRef = useRef(null)
+
+    useEffect(() => {
+        AOS.init({
+            duration: 1000,
+            once: false,
+            offset: 80,
+            easing: 'ease-in-out-cubic',
+        });
+    }, []);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -92,30 +103,30 @@ const LandingPage = () => {
 
     return (
         <>
-        <header className="w-full h-[90px] py-2 px-2 md:px-4 flex items-center justify-center fixed top-3 left-0 z- overflow-x-hidden z-50">
+        <header className="w-full h-[90px] py-2 px-2 md:px-4 flex items-center justify-center fixed top-3 left-0 z- overflow-x-hidden z-50" data-aos="fade-down" data-aos-duration="1200">
             <nav className="w-full md:w-[98%] bg-black/20 backdrop-blur-[6px] flex items-center justify-between py-4 px-4 rounded-lg">
-                <div className="logo">
+                <div className="logo" data-aos="zoom-in" data-aos-delay="200">
                     <Link to={ROUTES.home} className='flex items-center gap-2'>
                         <img src={logo} alt="logo" className='w-[40px] h-[40px] md:w-[50px] md:h-[50px]' />
                         <h1 className='text-xl md:text-2xl font-bold text-electric font-["Impact"]'>Codesphere</h1>
                     </Link>
                 </div>
-                <div className="call-btn">
+                <div className="call-btn" data-aos="fade-left" data-aos-delay="400">
                     <Link to={ROUTES.register} className='bg-electric px-3 py-1.5 md:px-4 md:py-2 rounded-[3px] text-white000 font-bold text-base md:text-lg hover:bg-electric/80 transition-colors duration-300'>Get Started</Link>
                 </div>
             </nav>
         </header>
         <main className="container min-h-screen overflow-hidden bg-dark900 ">
-            <section className="hero w-full py-6 md:py-12 px-4 bg-[radial-gradient(circle_at_75%_50%,rgba(37,99,235,0.15)_0%,rgba(10,10,10,1)_60%)] md:pt-[135px] pt-[150px]">
+            <section className="hero w-full py-6 md:py-12 px-4 bg-[radial-gradient(circle_at_75%_50%,rgba(37,99,235,0.15)_0%,rgba(10,10,10,1)_60%)] md:pt-[135px] pt-[150px]" data-aos="fade-up" data-aos-duration="1200">
                 <div className="hero-content w-[95%] md:w-[90%] mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4">
-                    <div className="heroleft w-full md:w-[50%] flex items-center flex-col gap-2 px-2 md:px-4">
-                        <div className="w-full hero-top">
+                    <div className="heroleft w-full md:w-[50%] flex items-center flex-col gap-2 px-2 md:px-4" data-aos="fade-right" data-aos-delay="200">
+                        <div className="w-full hero-top" data-aos="fade-up" data-aos-delay="300">
                             <h1 className="text-center md:text-left"><span className="text-4xl font-bold text-white md:text-6xl">Connect. </span> <span className="text-4xl font-bold text-electric md:text-6xl">Code.</span><br/><span className="text-4xl font-bold text-white md:text-6xl">Collaborate.</span></h1>
                         </div>
-                        <div className="w-full hero-mid">
+                        <div className="w-full hero-mid" data-aos="fade-up" data-aos-delay="400">
                             <p className='text-white text-sm md:text-md font-["Inter"] text-center md:text-left'>The ultimate platform for developers to share knowledge, build <br className="hidden md:block"/> projects, and grow their careers in tech communities.</p>
                         </div>
-                        <div className="flex flex-col items-start justify-start w-full gap-2 hero-cta md:flex-row">
+                        <div className="flex flex-col items-start justify-start w-full gap-2 hero-cta md:flex-row" data-aos="zoom-in" data-aos-delay="500">
                             <Link to={ROUTES.register} className='join bg-electric px-4 py-2 rounded-[3px] text-white000 font-bold text-base md:text-lg w-full md:w-auto text-center'>
                                 Join Now - It's Free
                             </Link>
@@ -142,8 +153,8 @@ const LandingPage = () => {
                             <p className='text-white text-sm md:text-md font-["Inter"] text-left'>Join <span className='font-bold text-electric'>24,817+</span> developers worldwide</p>
                         </div>
                     </div>
-                    <div className="heroright w-full md:w-[50%] flex items-center justify-center mt-8 md:mt-0">
-                        <div className="example-post relative bg-dark800 w-full md:w-[90%] rounded-lg">
+                    <div className="heroright w-full md:w-[50%] flex items-center justify-center mt-8 md:mt-0" data-aos="fade-left" data-aos-delay="400">
+                        <div className="example-post relative bg-dark800 w-full md:w-[90%] rounded-lg" data-aos="flip-left" data-aos-delay="600">
                             <div className="hero-absolute"></div>
                             <div className="relative z-10 flex items-center w-full gap-2 px-4 py-2 rounded-tl-lg rounded-tr-lg example-top justify-left bg-dark700">
                                 <div className="flex items-center gap-2 circles justify-left">
@@ -187,36 +198,36 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
-            <section className="flex flex-col items-center justify-center w-full py-6 trusted bg-dark800">
-                <h2 className="text-border text-lg md:text-xl font-bold font-['Inter'] text-center w-full">Trusted by developers at</h2>
+            <section className="flex flex-col items-center justify-center w-full py-6 trusted bg-dark800" data-aos="fade-up" data-aos-delay="200">
+                <h2 className="text-border text-lg md:text-xl font-bold font-['Inter'] text-center w-full" data-aos="fade-up" data-aos-delay="300">Trusted by developers at</h2>
                 <div className="trusted-content w-full mx-auto flex  items-center justify-between gap-8 md:w-[90%] p-4 md:p-10">
-                    <div className="flex items-center justify-center trustee">
+                    <div className="flex items-center justify-center trustee" data-aos="zoom-in" data-aos-delay="400">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Sass_Logo_Color.svg" alt="Sass" className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] object-contain opacity-[0.8] hover:opacity-100 transition-opacity duration-300"/>
                     </div>
-                    <div className="flex items-center justify-center trustee">
+                    <div className="flex items-center justify-center trustee" data-aos="zoom-in" data-aos-delay="500">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/d/db/Npm-logo.svg" alt="npm" className="w-[40px] h-[40px] md:w-[80px] md:h-[80px] object-contain opacity-[0.8] hover:opacity-100 transition-opacity duration-300"/>
                     </div>
-                    <div className="flex items-center justify-center trustee">
+                    <div className="flex items-center justify-center trustee" data-aos="zoom-in" data-aos-delay="600">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] object-contain opacity-[0.8] hover:opacity-100 transition-opacity duration-300"/>
                     </div>
-                    <div className="flex items-center justify-center trustee">
+                    <div className="flex items-center justify-center trustee" data-aos="zoom-in" data-aos-delay="700">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Node.js_logo.svg" alt="Node.js" className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] object-contain opacity-[0.8] hover:opacity-100 transition-opacity duration-300"/>
                     </div>
-                    <div className="flex items-center justify-center trustee">
+                    <div className="flex items-center justify-center trustee" data-aos="zoom-in" data-aos-delay="800">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg" alt="Python" className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] object-contain opacity-[0.8] hover:opacity-100 transition-opacity duration-300"/>
                     </div>
-                    <div className="flex items-center justify-center trustee">
+                    <div className="flex items-center justify-center trustee" data-aos="zoom-in" data-aos-delay="900">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Laravel.svg" alt="Laravel" className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] object-contain opacity-[0.8] hover:opacity-100 transition-opacity duration-300"/>
                     </div>
                 </div>
             </section>
-            <section className="flex flex-col items-center w-full gap-2 features">
+            <section className="flex flex-col items-center w-full gap-2 features" data-aos="fade-up" data-aos-delay="200">
                 <div className="flex flex-col items-center justify-center w-full gap-2 py-8 features-content">
-                    <h1 className="text-white text-5xl font-bold font-['Inter'] text-center">Everything Developers Need</h1>
-                    <p className="text-border text-xl font-['Inter'] text-center">From technical discussions to career growth, we,ve built the perfect environment for coders</p>
+                    <h1 className="text-white text-5xl font-bold font-['Inter'] text-center" data-aos="fade-up" data-aos-delay="300">Everything Developers Need</h1>
+                    <p className="text-border text-xl font-['Inter'] text-center" data-aos="fade-up" data-aos-delay="400">From technical discussions to career growth, we,ve built the perfect environment for coders</p>
                 </div>
                 <div className="features-box w-[90%] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-8">
-                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300">
+                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300" data-aos="flip-up" data-aos-delay="200">
                         <div className="mb-4 feature-icon">
                             <div className="w-[50px] h-[50px] bg-electric/30 rounded-md flex items-center justify-center">
                                 <ion-icon name="people" className="text-4xl text-electric"></ion-icon>
@@ -232,7 +243,7 @@ const LandingPage = () => {
                                 </ul>
                             </div>
                     </div>
-                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300">
+                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300" data-aos="flip-up" data-aos-delay="400">
                         <div className="mb-4 feature-icon">
                             <div className="w-[50px] h-[50px] bg-electric/30 rounded-md flex items-center justify-center">
                                 <ion-icon name="code-slash" className="text-4xl text-electric"></ion-icon>
@@ -248,7 +259,7 @@ const LandingPage = () => {
                                 </ul>
                             </div>
                     </div>
-                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300">
+                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300" data-aos="flip-up" data-aos-delay="600">
                         <div className="mb-4 feature-icon">
                             <div className="w-[50px] h-[50px] bg-electric/30 rounded-md flex items-center justify-center">
                                 <ion-icon name="hardware-chip-outline" className="text-4xl text-electric"></ion-icon>
@@ -265,7 +276,7 @@ const LandingPage = () => {
                                 </ul>
                             </div>
                     </div>
-                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300">
+                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300" data-aos="flip-up" data-aos-delay="800">
                         <div className="mb-4 feature-icon">
                             <div className="w-[50px] h-[50px] bg-electric/30 rounded-md flex items-center justify-center">
                                 <ion-icon name="diamond" className="text-4xl text-electric"></ion-icon>
@@ -281,7 +292,7 @@ const LandingPage = () => {
                                 </ul>
                             </div>
                     </div>
-                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300">
+                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300" data-aos="flip-up" data-aos-delay="1000">
                         <div className="mb-4 feature-icon">
                             <div className="w-[50px] h-[50px] bg-electric/30 rounded-md flex items-center justify-center">
                                 <ion-icon name="briefcase" className="text-4xl text-electric"></ion-icon>
@@ -297,7 +308,7 @@ const LandingPage = () => {
                                 </ul>
                             </div>
                     </div>
-                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300">
+                    <div className="feature-card bg-dark800 p-6 rounded-lg border border-dark700 hover:border-electric hover:translate-y-[-5px] transition-all duration-300" data-aos="flip-up" data-aos-delay="1200">
                         <div className="mb-4 feature-icon">
                             <div className="w-[50px] h-[50px] bg-electric/30 rounded-md flex items-center justify-center">
                                 <ion-icon name="flash" className="text-4xl text-electric"></ion-icon>
@@ -403,46 +414,46 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
-            <section className="relative flex items-center justify-center w-full py-8 start md:py-12">
+            <section className="relative flex items-center justify-center w-full py-8 start md:py-12" data-aos="fade-up" data-aos-delay="200">
                 <div className="start-div w-[90%] md:w-[80%] lg:w-[60%] flex flex-col gap-4 md:gap-6 items-center justify-center border border-border rounded-md bg-gradient-to-r from-dark800 to-dark700 p-4 md:p-8">
                     <div className="flex flex-col items-center justify-center w-full gap-3 top md:gap-6">
-                        <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold font-['Inter'] text-center">Ready to join the Community?</h1>
-                        <p className="text-border text-base md:text-lg font-['Inter'] text-center">Join a community of developers who are passionate about coding and building amazing things.</p>
+                        <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-bold font-['Inter'] text-center" data-aos="fade-up" data-aos-delay="300">Ready to join the Community?</h1>
+                        <p className="text-border text-base md:text-lg font-['Inter'] text-center" data-aos="fade-up" data-aos-delay="400">Join a community of developers who are passionate about coding and building amazing things.</p>
                     </div>
                     <div className="flex flex-col items-center justify-center w-full gap-4 actions md:flex-row md:gap-6">
-                        <Link to={ROUTES.register} className="w-full md:w-[230px] bg-electric text-white px-4 md:px-6 py-3 md:py-4 rounded-md border-[3px] border-electric hover:bg-transparent hover:text-electric hover:translate-y-[-5px] transition-all duration-300 text-sm md:text-base text-center">Get Started for Free</Link>
-                        <Link to={ROUTES.register} className="w-full md:w-[230px] bg-dark800 text-white px-4 md:px-6 py-3 md:py-4 rounded-md border-[3px] border-white hover:border-electric hover:translate-y-[-5px] hover:text-electric transition-all duration-300 text-sm md:text-base text-center">Explore Communities</Link>
+                        <Link to={ROUTES.register} className="w-full md:w-[230px] bg-electric text-white px-4 md:px-6 py-3 md:py-4 rounded-md border-[3px] border-electric hover:bg-transparent hover:text-electric hover:translate-y-[-5px] transition-all duration-300 text-sm md:text-base text-center" data-aos="zoom-in" data-aos-delay="500">Get Started for Free</Link>
+                        <Link to={ROUTES.register} className="w-full md:w-[230px] bg-dark800 text-white px-4 md:px-6 py-3 md:py-4 rounded-md border-[3px] border-white hover:border-electric hover:translate-y-[-5px] hover:text-electric transition-all duration-300 text-sm md:text-base text-center" data-aos="zoom-in" data-aos-delay="600">Explore Communities</Link>
                     </div>
                 </div>
             </section>
-            <section className="relative w-full banner bg-dark900" ref={bannerRef}>
+            <section className="relative w-full banner bg-dark900" ref={bannerRef} data-aos="fade-up" data-aos-delay="200">
                 <div className="custom-shape-divider-top-1749208262">
                     <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
                         <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" className="shape-fill"></path>
                     </svg>
                 </div>
                 <div className="banner-content w-full min-h-[600px] flex flex-col-reverse gap-4 md:flex-row items-center justify-between md:pt-[80px] pt-[145px] px-4 md:px-8 lg:px-12 p-[40px] bg-gradient-to-br from-dark800 via-dark700 to-dark900">
-                    <div className="image-container object-contain rounded-lg w-full md:w-[45%] md:full h-[200px] flex items-center justify-center mb-8 md:mb-0 bg-transparent">
+                    <div className="image-container object-contain rounded-lg w-full md:w-[45%] md:full h-[200px] flex items-center justify-center mb-8 md:mb-0 bg-transparent" data-aos="fade-right" data-aos-delay="300">
                         <img 
                             src={banner}
                             alt="Coding illustration" 
                             className="object-contain w-full rounded-t-lg shadow-lg md:object-cover"
                         />
                     </div>
-                    <div className="text-container w-full md:w-[45%] flex flex-col gap-6">
+                    <div className="text-container w-full md:w-[45%] flex flex-col gap-6" data-aos="fade-left" data-aos-delay="400">
                         <h1 className="text-electric text-xl md:text-3xl font-bold font-['Inter']">YOUR ULTIMATE PROGRAMMING PARTNER</h1>
                         <h2 className="text-white text-3xl md:text-4xl font-bold font-['Inter']">Join Our Developer Community</h2>
                         <p className="text-base text-border md:text-lg">Connect with developers worldwide, share knowledge, and grow your skills in a supportive environment.</p>
                         <div className="flex flex-wrap items-center gap-4 stats md:gap-8">
-                            <div className="stat">
+                            <div className="stat" data-aos="zoom-in" data-aos-delay="500">
                                 <h3 className="text-2xl font-bold text-electric md:text-3xl">{activeMembers}K+</h3>
                                 <p className="text-xs text-border md:text-sm">Active Members</p>
                             </div>
-                            <div className="stat">
+                            <div className="stat" data-aos="zoom-in" data-aos-delay="600">
                                 <h3 className="text-2xl font-bold text-electric md:text-3xl">{communities}+</h3>
                                 <p className="text-xs text-border md:text-sm">Communities</p>
                             </div>
-                            <div className="stat">
+                            <div className="stat" data-aos="zoom-in" data-aos-delay="700">
                                 <h3 className="text-2xl font-bold text-electric md:text-3xl">{discussions}K+</h3>
                                 <p className="text-xs text-border md:text-sm">Discussions</p>
                             </div>
