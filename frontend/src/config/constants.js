@@ -17,6 +17,8 @@ export const ROUTES = {
     terms: '/terms',
     cookies: '/cookies',
     guidelines: '/guidelines',
+    verify_email_sent: '/verify-email-sent',
+    verify_email: '/verify-email/:uidb64/:token',
 }
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'; 
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001'; 

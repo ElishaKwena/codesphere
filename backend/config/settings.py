@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,16 +27,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
+    'drf_yasg',
     
-    'api.apps.ApiConfig',
     'posts.apps.PostsConfig',
     'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
 ]
 
 MIDDLEWARE = [
-     'corsheaders.middleware.CorsMiddleware', 
+    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',  
     
     'django.middleware.security.SecurityMiddleware',
@@ -48,17 +49,61 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# JWT Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',  # For endpoint-specific limits
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        # General API access
+        'anon': '200/hour',        # Unauthenticated: 200 requests/hour (~3.3 RPM)
+        'user': '5000/day',        # Authenticated: 5000 requests/day (~3.5 RPM sustained, bursts to ~200/hour)
+        
+        # Security-sensitive endpoints
+        'register': '10/hour',     # Account creation
+        'login': '30/hour',       # Login attempts
+        'password_reset': '5/hour',# Password reset requests
+        'verify_email': '10/hour', # Email verification
+        
+        # High-traffic endpoints (adjust based on your API usage)
+        'listings': '1000/hour',  # For listing endpoints
+        'search': '500/hour',     # Search functionality
+        'profile': '300/hour',    # User profile views
+        
+        # API abuse prevention
+        'heavy_operation': '50/hour'  # For computationally expensive endpoints
+    }
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
     "https://example.com",
     "https://sub.example.com",
     "http://localhost:5173",
-    "http://127.0.0.1:9000",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    
 ]
-
-# Allow credentials (cookies, authorization headers)
 CORS_ALLOW_CREDENTIALS = True
+
 
 # Allowed methods
 CORS_ALLOW_METHODS = [
@@ -135,6 +180,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+]
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -152,8 +202,41 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files (User uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email Configuration (Example for Gmail)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'hatblack9874@gmail.com'
+EMAIL_HOST_PASSWORD = 'nato npcn vxev cdha'
+DEFAULT_FROM_EMAIL = 'hatblack9874@gmail.com'
+
+# Frontend URLs
+FRONTEND_LOGIN_URL = 'http://localhost:5174/login'
+FRONTEND_VERIFY_URL = 'http://localhost:5174/verify-email/'
+
+
+SWAGGER_SETTINGS = {
+    'DEFAULT_INFO': 'your_app.urls.schema_view',  # Points to the schema_view above
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': False,
+    'JSON_EDITOR': True,
+    'LOGOUT_URL': '/admin/logout/'
+}

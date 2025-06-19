@@ -5,6 +5,7 @@ from .models import *
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     list_display = UserAdmin.list_display + ('followers_count', 'following_count')
+    readonly_fields = UserAdmin.readonly_fields + ('date_joined',)
     
     def followers_count(self, obj):
         return obj.followers.count()
