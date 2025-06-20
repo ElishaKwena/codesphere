@@ -59,8 +59,6 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('users.urls')),
-    # path('api/posts/', include('posts.urls')),
-    # path('api/groups/', include('groups.urls')),
 
     # JWT Token URLS
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),

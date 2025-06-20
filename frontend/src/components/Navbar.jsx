@@ -22,6 +22,8 @@ import bookmark from '../assets/icons/bookmark.png'
 import notify from '../assets/icons/notify.png'
 import addnew from '../assets/icons/add.png'
 import close from '../assets/icons/close.png'
+import { useAuth } from '../context/AuthContext.jsx'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
     const [isExploreOpen, setIsExploreOpen] = useState(false);
@@ -36,6 +38,9 @@ const Navbar = () => {
     const dropdownsRef = useRef(null);
     const sidebarRef = useRef(null);
     const sidebarToggleRef = useRef(null); // NEW: ref for sidebar toggle button
+
+    const { logout } = useAuth();
+    const navigate = useNavigate();
 
     // Dropdown click-outside handler
     useEffect(() => {
@@ -111,6 +116,11 @@ const Navbar = () => {
     };
     const toggleSidebar = () => {
         setSidebarOpen((prev) => !prev);
+    };
+
+    const handleLogout = async () => {
+        await logout();
+        navigate(ROUTES.landing);
     };
 
     return (
@@ -285,9 +295,9 @@ const Navbar = () => {
                                 <Link to={ROUTES.home} className='text-sm font-semibold text-white font-["Times_New_Roman"] py-2 px-4 pr-24 hover:bg-dark700 transition-all duration-3000 flex items-center gap-2'>
                                     Monetization
                                 </Link>               
-                                <Link to={ROUTES.home} className='text-sm font-semibold text-white font-["Times_New_Roman"] py-2 px-4 pr-24 hover:bg-dark700 transition-all duration-3000 flex items-center gap-2'>
+                                <button onClick={handleLogout} className='text-sm font-semibold text-white font-["Times_New_Roman"] py-2 px-4 pr-24 hover:bg-dark700 transition-all duration-3000 flex items-center gap-2 w-full text-left'>
                                     Sign Out
-                                </Link>               
+                                </button>               
                             </div>
                         </div>
                     </div>
@@ -451,10 +461,10 @@ const Navbar = () => {
                                 </Link>
                             </div>
                             <div className="w-full menu">
-                                <Link to={ROUTES.home} className='w-full text-xl font-semibold text-white font-["Times_New_Roman"] py-2 px-2 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={signout} alt="" className='w-6 h-6' />
-                                Sign Out
-                                </Link>
+                                <button onClick={handleLogout} className='w-full text-xl font-semibold text-white font-["Times_New_Roman"] py-2 px-2 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2 text-left'>
+                                    <img src={signout} alt="" className='w-6 h-6' />
+                                    Sign Out
+                                </button>
                             </div>
                         </div>
                 </div>
