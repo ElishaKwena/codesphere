@@ -1,7 +1,8 @@
 from django.urls import path
 from .views import (
     RegisterView, UserDetailView, LoginView, LogoutView, VerifyEmailView, ResendVerificationView,
-    FollowerRelationshipViewSet, PasswordResetRequestView, PasswordResetConfirmView
+    FollowerRelationshipViewSet, PasswordResetRequestView, PasswordResetConfirmView,
+    TopicListView, UserInterestView
 )
 
 fr_list = FollowerRelationshipViewSet.as_view({'get': 'list', 'post': 'create'})
@@ -16,6 +17,8 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('verify-email/<str:uid64>/<str:token>/', VerifyEmailView.as_view(), name='verify-email'),
     path('resend-verification/', ResendVerificationView.as_view(), name='resend-verification'),
+    path('topics/', TopicListView.as_view(), name='topics'),
+    path('interests/', UserInterestView.as_view(), name='interests'),
     path('follow/', fr_list, name='follow-list'),
     path('follow/<int:pk>/', fr_detail, name='follow-detail'),
     path('follow/follow/', fr_follow, name='follow-follow'),

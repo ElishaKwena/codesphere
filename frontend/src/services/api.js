@@ -45,4 +45,87 @@ api.interceptors.response.use(
     }
 );
 
+// Topics API functions
+export const topicsAPI = {
+    // Get all available topics
+    getTopics: () => api.get('/auth/topics/'),
+    
+    // Get user's selected interests
+    getUserInterests: () => api.get('/auth/interests/'),
+    
+    // Save user's selected interests
+    saveUserInterests: (topicIds) => api.post('/auth/interests/', { topic_ids: topicIds }),
+};
+
+// Groups API functions
+export const groupsAPI = {
+    // Get all groups with pagination
+    getGroups: (params = {}) => api.get('/groups/', { params }),
+    
+    // Get a specific group by ID
+    getGroup: (groupId, config = {}) => api.get(`/groups/${groupId}/`, config),
+    
+    // Create a new group
+    createGroup: (groupData) => api.post('/groups/', groupData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }),
+    
+    // Update a group
+    updateGroup: (groupId, groupData) => api.put(`/groups/${groupId}/`, groupData),
+    
+    // Delete a group
+    deleteGroup: (groupId) => api.delete(`/groups/${groupId}/`),
+    
+    // Join a group
+    joinGroup: (groupId) => api.post(`/groups/${groupId}/join/`),
+    
+    // Leave a group
+    leaveGroup: (groupId) => api.post(`/groups/${groupId}/leave/`),
+    
+    // Get user's groups
+    getUserGroups: (config = {}) => api.get('/user-groups/', config),
+    
+    // Get group categories
+    getCategories: () => api.get('/categories/'),
+    
+    // Get group invites
+    getGroupInvites: (groupId) => api.get(`/groups/${groupId}/invites/`),
+    
+    // Create group invite
+    createGroupInvite: (groupId, inviteData) => api.post(`/groups/${groupId}/invites/create/`, inviteData),
+    
+    // Accept invite
+    acceptInvite: (token) => api.post(`/invites/accept/${token}/`),
+    
+    // Get group analytics
+    getGroupAnalytics: (groupId) => api.get(`/groups/${groupId}/analytics/`),
+    
+    // Get group events
+    getGroupEvents: (groupId) => api.get(`/groups/${groupId}/events/`),
+    
+    // Create group event
+    createGroupEvent: (groupId, eventData) => api.post(`/groups/${groupId}/events/`, eventData),
+};
+
+// Users API functions
+export const usersAPI = {
+    // Follow a user
+    followUser: (userId) => api.post('/auth/follow/follow/', { user_id: userId }),
+    
+    // Unfollow a user
+    unfollowUser: (userId) => api.post('/auth/follow/unfollow/', { user_id: userId }),
+    
+    // Get current user profile
+    getCurrentUser: () => api.get('/auth/user/'),
+    
+    // Update current user profile
+    updateProfile: (userData) => api.put('/auth/user/', userData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    }),
+};
+
 export default api; 

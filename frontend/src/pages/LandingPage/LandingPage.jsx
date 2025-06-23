@@ -40,7 +40,7 @@ const LandingPage = () => {
                 </div>
             </nav>
         </header>
-        <main className="container min-h-screen overflow-hidden bg-dark900 ">
+        <main className="w-full min-h-screen overflow-hidden bg-dark900 ">
             <section className="hero w-full py-6 md:py-12 px-4 bg-[radial-gradient(circle_at_75%_50%,rgba(37,99,235,0.15)_0%,rgba(10,10,10,1)_60%)] md:pt-[135px] pt-[150px]">
                 <div className="hero-content w-[95%] md:w-[90%] mx-auto flex flex-col md:flex-row items-center justify-between gap-8 md:gap-4">
                     <div className="heroleft w-full md:w-[50%] flex items-center flex-col gap-2 px-2 md:px-4">

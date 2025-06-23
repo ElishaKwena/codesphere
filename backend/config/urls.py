@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import TokenVerifyView
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -54,11 +56,29 @@ schema_view = get_schema_view(
     permission_classes=[permissions.AllowAny],
 )
 
-
+# Simple API root view
+class APIRootView(APIView):
+    def get(self, request):
+        return Response({
+            'message': 'CodeSphere API',
+            'version': 'v1',
+            'endpoints': {
+                'admin': '/admin/',
+                'auth': '/api/auth/',
+                'groups': '/api/groups/',
+                'categories': '/api/categories/',
+                'badges': '/api/badges/',
+                'documentation': '/swagger/',
+                'token_refresh': '/api/token/refresh/',
+                'token_verify': '/api/token/verify/',
+            }
+         })
 
 urlpatterns = [
+    path('', APIRootView.as_view(), name='api-root'),  # Add root view
     path('admin/', admin.site.urls),
     path('api/auth/', include('users.urls')),
+    path('api/', include('groups.urls')),  # Add groups URLs
 
     # JWT Token URLS
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),

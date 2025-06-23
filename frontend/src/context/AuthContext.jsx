@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api'
+import { ROUTES } from '../config/constants';
 
 const AuthContext = createContext();
 
@@ -13,6 +14,17 @@ export const AuthProvider = ({ children }) => {
         console.log('Current user:', user); // Debug log
     }, [user]);
 
+    const refreshUser = async () => {
+        try {
+            const response = await api.get('/auth/user/');
+            setUser(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+            return null;
+        }
+    };
+
     useEffect(() => {
         const initAuth = async () => {
             const token = localStorage.getItem('access_token')
@@ -22,6 +34,11 @@ export const AuthProvider = ({ children }) => {
                     // verify token validity
                     const response = await api.get('/auth/user/')
                     setUser(response.data)
+                    
+                    // Check if user needs to complete onboarding
+                    if (!response.data.has_completed_onboarding) {
+                        navigate(ROUTES.topics);
+                    }
                 }
                 catch (error) {
                     localStorage.removeItem('access_token')
@@ -32,7 +49,7 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         };
         initAuth();
-    }, []);
+    }, [navigate]);
 
     const register = async (formData) => {
         try {
@@ -65,7 +82,14 @@ export const AuthProvider = ({ children }) => {
             // get user data
             const UserResponse = await api.get('/auth/user/')
             setUser(UserResponse.data)
-            navigate('/home');
+            
+            // Check if user needs to complete onboarding
+            if (!UserResponse.data.has_completed_onboarding) {
+                navigate(ROUTES.topics);
+            } else {
+                navigate('/home');
+            }
+            
             return { success: true }
         }
         catch (error) {
@@ -90,8 +114,12 @@ export const AuthProvider = ({ children }) => {
         return { success: true };
     };
 
+    const updateUser = (userData) => {
+        setUser(userData);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser, refreshUser }}>
             {!loading && children}
         </AuthContext.Provider>
     );

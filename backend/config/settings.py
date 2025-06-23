@@ -1,8 +1,8 @@
 from pathlib import Path
 from datetime import timedelta
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -32,7 +32,10 @@ INSTALLED_APPS = [
     'drf_yasg',
     
     'users.apps.UsersConfig',
+    'groups.apps.GroupsConfig',
 ]
+
+APPEND_SLASH = False
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', 
@@ -45,8 +48,44 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    
+    #  groups middleware
+    'groups.middleware.SecurityHeadersMiddleware',
+    'groups.middleware.GroupActivityMiddleware', 
+    'groups.middleware.GroupAccessMiddleware',
 ]
 
+# celery disabled for developments
+# Celery configuration
+USE_CELERY = False  # Set False for synchronous fallback
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Broker
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'  # For task results
+CELERY_TIMEZONE = 'UTC'  # Match Django's TIME_ZONE
+
+# Conditional Celery beat schedule
+if USE_CELERY:
+    try:
+        from celery.schedules import crontab
+        CELERY_BEAT_SCHEDULE = {
+            'expire-invites-nightly': {
+                'task': 'groups.tasks.expire_invites',
+                'schedule': crontab(hour=3, minute=0)  # 3 AM daily
+            },
+        }
+    except ImportError:
+        CELERY_BEAT_SCHEDULE = {}
+else:
+    CELERY_BEAT_SCHEDULE = {}
+
+# Install requirements
+# pip install celery redis
+
+# Start Redis (in separate terminal)
+# redis-server
+
+# Start Celery worker
+# celery -A yourproject worker --loglevel=info
 # JWT Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -55,26 +94,31 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
-        'rest_framework.throttling.ScopedRateThrottle',  # For endpoint-specific limits
+        'rest_framework.throttling.ScopedRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        # General API access
-        'anon': '200/hour',        # Unauthenticated: 200 requests/hour (~3.3 RPM)
-        'user': '5000/day',        # Authenticated: 5000 requests/day (~3.5 RPM sustained, bursts to ~200/hour)
+        # ========== Core Security ==========
+        'anon': '200/hour',
+        'user': '5000/day',
+        'register': '10/hour',
+        'login': '30/hour',
+        'password_reset': '5/hour',
+        'verify_email': '10/hour',
         
-        # Security-sensitive endpoints
-        'register': '10/hour',     # Account creation
-        'login': '30/hour',       # Login attempts
-        'password_reset': '5/hour',# Password reset requests
-        'verify_email': '10/hour', # Email verification
+        # ========== Group Management ==========
+        'group-create': '3/day',          # POST /groups/
+        'group-join': '10/hour',          # POST /groups/<id>/join/
+        'group-invite': '20/hour',        # POST /groups/<id>/invites/create/
+        'group-admin-action': '50/hour',  # Approvals, badge awards, etc.
         
-        # High-traffic endpoints (adjust based on your API usage)
-        'listings': '1000/hour',  # For listing endpoints
-        'search': '500/hour',     # Search functionality
-        'profile': '300/hour',    # User profile views
+        # ========== Content Operations ==========
+        'listings': '1000/hour',
+        'search': '500/hour',
+        'profile': '300/hour',
+        'heavy_operation': '50/hour',
         
-        # API abuse prevention
-        'heavy_operation': '50/hour'  # For computationally expensive endpoints
+        # ========== Analytics ==========
+        'analytics': '100/hour'  # GET /groups/<id>/analytics/
     }
 }
 
@@ -130,6 +174,39 @@ CORS_ALLOW_HEADERS = [
 CORS_PREFLIGHT_MAX_AGE = 86400
 
 ROOT_URLCONF = 'config.urls'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    }
+}
 
 TEMPLATES = [
     {

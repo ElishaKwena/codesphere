@@ -1,7 +1,10 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 // import UserGroups from './pages/mainPages/UserGroups';
-// import Groups from './pages/mainPages/Groups';
+import Groups from './pages/mainPages/Groups';
+import GroupDetail from './pages/mainPages/GroupDetail';
+import CreateGroup from './pages/mainPages/CreateGroup';
+import InviteAccept from './pages/mainPages/InviteAccept';
 import Home from './pages/mainPages/Home';
 import LandingPage from './pages/LandingPage/LandingPage';
 import Register from './pages/AuthPages/Register';
@@ -10,6 +13,7 @@ import VerifyEmailSent from './pages/Email/VerifyEmailSent';
 import VerifyEmail from './pages/Email/VerifyEmail';
 import PasswordResetRequest from './pages/AuthPages/PasswordResetRequest';
 import PasswordResetConfirm from './pages/AuthPages/PasswordResetConfirm';
+import Topics from './pages/mainPages/Topics';
 
 import { ROUTES } from './config/constants';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -69,10 +73,15 @@ function AppContent() {
         <Route path={ROUTES.password_reset_request} element={<PasswordResetRequest />} />
         <Route path={ROUTES.password_reset_confirm} element={<PasswordResetConfirm />} />
         
+        <Route path={ROUTES.groups} element={<Groups />} />
+        <Route path="/groups/create" element={<CreateGroup />} />
+        <Route path="/groups/:groupId" element={<GroupDetail />} />
+        <Route path="/invite/:token" element={<InviteAccept />} />
+        
         <Route element={<ProtectedRoute />}>
           <Route path={ROUTES.home} element={<Home />} />
-          {/* <Route path={ROUTES.groups} element={<Groups />} />
-          <Route path={ROUTES.usergroups} element={<UserGroups />} /> */}
+          <Route path={ROUTES.topics} element={<Topics />} />
+          {/* <Route path={ROUTES.usergroups} element={<UserGroups />} /> */}
         </Route>
         
         <Route path="*" element={<Navigate to={ROUTES.home} replace />} />

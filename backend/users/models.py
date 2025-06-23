@@ -3,7 +3,9 @@ from .managers import CustomUserManager
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.utils.translation import gettext_lazy as _
- 
+
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     username = models.CharField(_('username'),max_length=30, unique=True)
@@ -14,6 +16,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(_('staff status'), default=False)
     
+    # Onboarding field
+    has_completed_onboarding = models.BooleanField(_('completed onboarding'), default=False)
     
     profile_picture = models.ImageField(_('profile picture'), upload_to='profile_pictures/', null=True, blank=True)
     bio = models.TextField(_('bio'), null=True, blank=True)
@@ -87,3 +91,27 @@ class FollowerRelationship(models.Model):
     def __str__(self):
         return f'{self.follower} follows {self.following}'
         
+        
+        
+class Topic(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True) 
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
+class UserInterest(models.Model):
+    user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, related_name='interests')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        unique_together = ('user', 'topic')
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.topic.name}"

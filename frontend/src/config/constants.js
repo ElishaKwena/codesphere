@@ -11,6 +11,9 @@ export const ROUTES = {
     jobs: '/jobs',
     blog: '/blog',
     groups: '/groups',
+    groupCreate: '/groups/create',
+    groupDetail: '/groups/:id',
+    inviteAccept: '/invite/:token',
     about: '/about',
     contact: '/contact',
     privacy: '/privacy',
@@ -21,6 +24,7 @@ export const ROUTES = {
     verify_email: '/verify-email/:uidb64/:token',
     password_reset_request: '/reset-password',
     password_reset_confirm: '/reset-password/:uid/:token',
+    topics: '/topics',
 }
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001'; 

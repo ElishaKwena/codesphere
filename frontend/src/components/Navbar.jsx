@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { ROUTES } from '../config/constants'
+import { useAuth } from '../context/AuthContext.jsx'
+import { groupsAPI } from '../services/api'
 import logo from '../assets/icons/logo.png'
 import javascript from '../assets/icons/java-script.png'
 import python from '../assets/icons/python.png'
 import ai from '../assets/icons/artificial.png'
 import add from '../assets/icons/interface.png'
-import profile from '../assets/images/user1.jpeg'
+import userPlaceholder from '../assets/images/user.png'
 import menu from '../assets/icons/menu.png'
 import search from '../assets/icons/search.png'
 import home from '../assets/icons/home.png'
@@ -22,7 +24,6 @@ import bookmark from '../assets/icons/bookmark.png'
 import notify from '../assets/icons/notify.png'
 import addnew from '../assets/icons/add.png'
 import close from '../assets/icons/close.png'
-import { useAuth } from '../context/AuthContext.jsx'
 import { useNavigate } from 'react-router-dom'
 
 const Navbar = () => {
@@ -33,14 +34,42 @@ const Navbar = () => {
     const [isAddnewOpen, setIsAddnewOpen] = useState(false);
     const [notifications, setNotifications] = useState(5); // Example notification count
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [userGroups, setUserGroups] = useState([]);
+    const [loadingGroups, setLoadingGroups] = useState(false);
 
     // Separate refs for dropdowns and sidebar
     const dropdownsRef = useRef(null);
     const sidebarRef = useRef(null);
     const sidebarToggleRef = useRef(null); // NEW: ref for sidebar toggle button
 
-    const { logout } = useAuth();
+    const { user, logout, refreshUser } = useAuth();
     const navigate = useNavigate();
+
+    // Fetch user's groups
+    useEffect(() => {
+        const fetchUserGroups = async () => {
+            if (user) {
+                setLoadingGroups(true);
+                try {
+                    console.log('Fetching user groups for user:', user.id);
+                    const response = await groupsAPI.getUserGroups({ params: { page_size: 3 } });
+                    console.log('User groups response:', response.data);
+                    setUserGroups(response.data.results || []);
+                } catch (error) {
+                    console.error("Failed to fetch user groups", error);
+                    console.error("Error response:", error.response?.data);
+                    console.error("Error status:", error.response?.status);
+                    setUserGroups([]);
+                } finally {
+                    setLoadingGroups(false);
+                }
+            } else {
+                setUserGroups([]);
+            }
+        };
+
+        fetchUserGroups();
+    }, [user]);
 
     // Dropdown click-outside handler
     useEffect(() => {
@@ -126,7 +155,7 @@ const Navbar = () => {
     return (
         <>
         <header className="w-full p-2 h-[90px] bg-dark900 fixed top-0 left-0 z-50 grid border-b-2 border-border02 overflow-visible ">
-            <nav className="flex items-center justify-between w-full">
+            <nav ref={dropdownsRef} className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-10 justify-left nav-left">
                     <div className="logo">
                         <Link to={ROUTES.landing} className='flex items-center gap-3 justify-left'>
@@ -184,36 +213,38 @@ const Navbar = () => {
                                     <h1 className='text-md font-bold text-border font-["Times_New_Roman"] text-nowrap'>YOUR GROUPS</h1>
                                 </div>
                                 <div className="flex flex-col items-center w-full gap-0 border-b border-border02 groupbox ">
-                                    <Link to={ROUTES.home} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
-                                        <span>
-                                            <img src={javascript} alt="" className='w-6 h-6'/>
-                                        </span>
-                                        <p className='transition-all text-nowrap duration-3000'>JavaScript Developers</p>
-                                    </Link>  
-                                    <Link to={ROUTES.home} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
-                                        <span>
-                                            <img src={python} alt="" className='w-6 h-6'/>
-                                        </span>
-                                        <p className='transition-all text-nowrap duration-3000'>Pythoniasts</p>
-                                    </Link>  
-                                    <Link to={ROUTES.home} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
-                                        <span>
-                                            <img src={ai} alt="" className='w-6 h-6'/>
-                                        </span>
-                                        <p className='transition-all text-nowrap duration-3000'>AI Enthusiasts</p>
-                                    </Link>  
+                                    {loadingGroups ? (
+                                        <div className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-border font-["Times_New_Roman"]'>
+                                            <span>Loading...</span>
+                                        </div>
+                                    ) : userGroups.length > 0 ? (
+                                        userGroups.map(group => (
+                                            <Link 
+                                                key={group.id}
+                                                to={`/groups/${group.id}`} 
+                                                className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'
+                                            >
+                                                <span>
+                                                    <img src={group.group_icon || defaultGroupIcon} alt={group.name} className='w-6 h-6 rounded-md object-cover'/>
+                                                </span>
+                                                <p className='transition-all text-nowrap duration-3000 capitalize'>{group.name}</p>
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <div className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-border font-["Times_New_Roman"]'>
+                                            <span>No groups joined</span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex items-center p-3 py-1 pr-24 border-b border-b-border02 justify-left top W-full">
                                     <h1 className='text-md font-bold text-border font-["Times_New_Roman"] text-nowrap'>DISCOVER</h1>
                                 </div>
                                 <div className="flex flex-col items-center w-full gap-0 groupbox ">
-                                    <Link to={ROUTES.groups} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
-                                        <span>
-                                            <img src={logo} alt="" className='w-6 h-6'/>
-                                        </span>
-                                        <p className='transition-all text-nowrap duration-3000'>Browse All Groups</p>
+                                    <Link to={ROUTES.groups} className='text-sm text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
+                                        <img src={logo} alt="" className='w-6 h-6' />
+                                        Browse All Groups
                                     </Link>  
-                                    <Link to={ROUTES.usergroups} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
+                                    <Link to={ROUTES.groupCreate} className='w-full pl-3 py-2 flex items-center gap-2 text-sm font-semibold text-white font-["Times_New_Roman"] hover:bg-dark700 transition-all duration-3000'>
                                         <span>
                                             <img src={add} alt="" className='w-6 h-6'/>
                                         </span>
@@ -283,7 +314,7 @@ const Navbar = () => {
                                 onClick={toggleProfile}
                                 className='relative flex items-center justify-center transition-all hover:text-electric duration-3000'
                             >
-                                <img src={profile} alt="Profile" className='object-cover h-auto rounded-full w-14' />
+                                <img src={user?.profile_picture || userPlaceholder} alt="Profile" className='object-cover w-12 h-12 rounded-full' />
                             </button>
                             <div className={`absolute left-[-150px] flex flex-col gap-1 border-2 rounded-md z-[100] top-16 border-border02 dropdown-items bg-dark800 transition-all duration-300 ease-in-out ${isProfileOpen ? 'max-h-[200px] opacity-100 pointer-events-auto' : 'max-h-0 opacity-0 pointer-events-none'}`}>
                                 <Link to={ROUTES.home} className='text-sm font-semibold text-white font-["Times_New_Roman"] py-2 px-4 pr-24 hover:bg-dark700 transition-all duration-3000 flex items-center gap-2'>
@@ -301,17 +332,9 @@ const Navbar = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="menu md:hidden">
-                        <button
-                            type="button"
-                            ref={sidebarToggleRef}
-                            onClick={toggleSidebar}
-                        >
-                            {sidebarOpen ? (
-                                <img src={close} alt="Close" className='w-8 h-8' />
-                            ) : (
-                                <img src={menu} alt="Menu" className='w-8 h-8' />
-                            )}
+                    <div className="relative menu md:hidden">
+                        <button type="button" onClick={toggleSidebar} ref={sidebarToggleRef}>
+                            <img src={sidebarOpen ? close : menu} alt="menu" className='w-8 h-8' />
                         </button>
                     </div>
                 </div>
@@ -389,28 +412,36 @@ const Navbar = () => {
                             <div className={`p-1 rounded-md dropdown bg-dark900 transition-all duration-300 ease-in-out overflow-hidden ${isGroupsOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                 <h1 className='text-xl font-semibold text-border font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md flex items-center justify-left gap-2'>YOUR GROUPS</h1>
                                 <hr className='h-2 border-border02' />
-                                <Link to={ROUTES.home} className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={javascript} alt="" className='w-6 h-6' />
-                                JavaScript Developers
-                                </Link>
-                                <Link to={ROUTES.home} className='text-xl font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={python} alt="" className='w-6 h-6' />
-                                Pythoniasts
-                                </Link>
-                                <Link to={ROUTES.home} className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={ai} alt="" className='w-6 h-6' />
-                                AI Enthusiasts
-                                </Link>
+                                {loadingGroups ? (
+                                    <div className='text-xl font-semibold text-border font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md flex items-center justify-left gap-2'>
+                                        Loading...
+                                    </div>
+                                ) : userGroups.length > 0 ? (
+                                    userGroups.map(group => (
+                                        <Link 
+                                            key={group.id}
+                                            to={`/groups/${group.id}`} 
+                                            className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'
+                                        >
+                                            <img src={group.group_icon || defaultGroupIcon} alt={group.name} className='w-6 h-6 rounded-md object-cover' />
+                                            <span className='capitalize'>{group.name}</span>
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <div className='text-xl font-semibold text-border font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md flex items-center justify-left gap-2'>
+                                        No groups joined
+                                    </div>
+                                )}
                                 <hr className='h-2 mt-2 border-border02' />
                                 <h1 className='text-xl font-semibold text-border font-["Times_New_Roman"] pl-4 py-1 pr-24 rounded-md flex items-center justify-left gap-2'>DISCOVER</h1>
                                 <hr className='h-2 border-border02' />
-                                <Link to={ROUTES.home} className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={logo} alt="" className='w-6 h-6' />
-                                Browse All Groups
+                                <Link to={ROUTES.groups} className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
+                                    <img src={logo} alt="" className='w-6 h-6' />
+                                    Browse All Groups
                                 </Link>
-                                <Link to={ROUTES.home} className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={add} alt="" className='w-6 h-6' />
-                                Create New Group
+                                <Link to={ROUTES.groupCreate} className='text-xl text-nowrap font-semibold text-white font-["Times_New_Roman"] pl-4 py-2 pr-24 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
+                                    <img src={add} alt="" className='w-6 h-6' />
+                                    Create New Group
                                 </Link>
                             </div>
                         </div>
@@ -435,16 +466,16 @@ const Navbar = () => {
                 <hr className='mt-3 border-border02' />
                 <div className="p-2 sidebar-btm">
                         <div className="flex items-center gap-2 top justify-left">
-                            <img src={profile} alt="" className='w-12 h-12 rounded-full' />
+                            <img src={user?.profile_picture || userPlaceholder} alt="" className='w-12 h-12 rounded-full' />
                             <div className="flex flex-col">
-                                <h1 className="text-2xl font-semibold text-white text-nowrap">Codex Pro</h1>
-                                <p className="text-sm text-border">@codxprogee</p>
+                                <h1 className="text-2xl font-semibold text-white text-nowrap">{user?.full_name || 'Guest User'}</h1>
+                                <p className="text-sm text-border">@{user?.username || 'guest'}</p>
                             </div>
                         </div>
                         <div className="flex flex-col items-center justify-center mt-3 container-box ">
                             <div className="w-full menu">
                                 <Link to={ROUTES.home} className='w-full text-xl font-semibold text-white font-["Times_New_Roman"] py-2 px-2 rounded-md hover:bg-dark700 transition-all duration-3000 flex items-center justify-left gap-2'>
-                                <img src={profile} alt="" className='w-6 h-6 rounded-full' />
+                                <img src={user?.profile_picture || userPlaceholder} alt="" className='w-6 h-6 rounded-full' />
                                 Your Profile
                                 </Link>
                             </div>

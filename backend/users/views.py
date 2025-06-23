@@ -5,8 +5,13 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.conf import settings
-from .serializers import UserRegisterSerializer, UserLoginSerializer, UserSerializer, FollowerRelationshipSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
-from .models import CustomUser, FollowerRelationship
+from .serializers import (
+    UserRegisterSerializer, UserLoginSerializer, UserSerializer, 
+    FollowerRelationshipSerializer, PasswordResetRequestSerializer, 
+    PasswordResetConfirmSerializer, TopicSerializer, UserInterestSerializer,
+    UserInterestCreateSerializer
+)
+from .models import CustomUser, FollowerRelationship, Topic, UserInterest
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
@@ -82,7 +87,8 @@ class LoginView(APIView):
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),
                     'user_id':user.id,
-                    'email':user.email
+                    'email':user.email,
+                    'has_completed_onboarding': user.has_completed_onboarding
                 })
             return Response({"error":"Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -109,7 +115,8 @@ class VerifyEmailView(APIView):
                 },
                 "user":{
                     'id':user.id,
-                    'email':user.email
+                    'email':user.email,
+                    'has_completed_onboarding': user.has_completed_onboarding
                 },
             }, status=status.HTTP_200_OK)
             
@@ -171,20 +178,68 @@ class ResendVerificationView(APIView):
 
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]
+    
     def get(self, request):
-        serializer = UserSerializer(request.user)
+        serializer = UserSerializer(request.user, context={'request': request})
+        return Response(serializer.data)
+    
+    def put(self, request):
+        serializer = UserSerializer(request.user, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(UserSerializer(request.user, context={'request': request}).data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class TopicListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        topics = Topic.objects.all()
+        serializer = TopicSerializer(topics, many=True)
         return Response(serializer.data)
 
-class LogoutView(APIView):
+class UserInterestView(APIView):
     permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        interests = request.user.interests.all()
+        serializer = UserInterestSerializer(interests, many=True)
+        return Response(serializer.data)
+    
     def post(self, request):
-        try:
-            refresh_token = request.data["refresh"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
-            return Response()
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        # Clear existing interests and add new ones
+        request.user.interests.all().delete()
+        
+        topic_ids = request.data.get('topic_ids', [])
+        if not topic_ids:
+            return Response(
+                {"error": "At least one topic must be selected"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Create new interests
+        interests = []
+        for topic_id in topic_ids:
+            try:
+                topic = Topic.objects.get(id=topic_id)
+                interest = UserInterest.objects.create(user=request.user, topic=topic)
+                interests.append(interest)
+            except Topic.DoesNotExist:
+                return Response(
+                    {"error": f"Topic with id {topic_id} does not exist"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        
+        # Mark onboarding as completed
+        request.user.has_completed_onboarding = True
+        request.user.save()
+        
+        serializer = UserInterestSerializer(interests, many=True)
+        return Response({
+            "message": "Interests saved successfully",
+            "interests": serializer.data,
+            "has_completed_onboarding": True
+        }, status=status.HTTP_201_CREATED)
 
 class FollowerRelationshipViewSet(viewsets.ModelViewSet):
     queryset = FollowerRelationship.objects.all()
@@ -204,32 +259,39 @@ class FollowerRelationshipViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['post'], url_path='follow', permission_classes=[IsAuthenticated])
     def follow(self, request):
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({'detail': 'user_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        user_to_follow_id = request.data.get('user_id')
+        if not user_to_follow_id:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            to_follow = CustomUser.objects.get(id=user_id)
+            user_to_follow = CustomUser.objects.get(id=user_to_follow_id)
         except CustomUser.DoesNotExist:
-            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-        if FollowerRelationship.objects.filter(follower=request.user, following=to_follow).exists():
-            return Response({'detail': 'Already following.'}, status=status.HTTP_400_BAD_REQUEST)
-        FollowerRelationship.objects.create(follower=request.user, following=to_follow)
-        return Response({'detail': 'Now following.'})
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if request.user == user_to_follow:
+            return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if FollowerRelationship.objects.filter(follower=request.user, following=user_to_follow).exists():
+            return Response({"error": "You are already following this user"}, status=status.HTTP_400_BAD_REQUEST)
+
+        FollowerRelationship.objects.create(follower=request.user, following=user_to_follow)
+        return Response({"detail": f"Successfully followed {user_to_follow.username}"}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], url_path='unfollow', permission_classes=[IsAuthenticated])
     def unfollow(self, request):
-        user_id = request.data.get('user_id')
-        if not user_id:
-            return Response({'detail': 'user_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        user_to_unfollow_id = request.data.get('user_id')
+        if not user_to_unfollow_id:
+            return Response({"error": "user_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            to_unfollow = CustomUser.objects.get(id=user_id)
+            user_to_unfollow = CustomUser.objects.get(id=user_to_unfollow_id)
+            relationship = FollowerRelationship.objects.get(follower=request.user, following=user_to_unfollow)
+            relationship.delete()
+            return Response({"detail": f"Successfully unfollowed {user_to_unfollow.username}"}, status=status.HTTP_204_NO_CONTENT)
         except CustomUser.DoesNotExist:
-            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
-        rel = FollowerRelationship.objects.filter(follower=request.user, following=to_unfollow)
-        if not rel.exists():
-            return Response({'detail': 'Not following.'}, status=status.HTTP_400_BAD_REQUEST)
-        rel.delete()
-        return Response({'detail': 'Unfollowed.'})
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except FollowerRelationship.DoesNotExist:
+            return Response({"error": "You are not following this user"}, status=status.HTTP_400_BAD_REQUEST)
 
 class PasswordResetRequestView(APIView):
     def post(self, request):
@@ -250,6 +312,18 @@ class PasswordResetConfirmView(APIView):
     def post(self, request):
         serializer = PasswordResetConfirmSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"detail": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+            user = serializer.save()
+            return Response({"detail": "Password reset successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        try:
+            refresh_token = request.data.get('refresh_token')
+            if refresh_token:
+                token = RefreshToken(refresh_token)
+                token.blacklist()
+            return Response({"detail": "Successfully logged out."}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": "Error logging out."}, status=status.HTTP_400_BAD_REQUEST)

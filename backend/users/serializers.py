@@ -6,6 +6,23 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_str, force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
+class TopicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Topic
+        fields = ['id', 'name', 'description',]
+
+class UserInterestSerializer(serializers.ModelSerializer):
+    topic = TopicSerializer(read_only=True)
+    
+    class Meta:
+        model = UserInterest
+        fields = ['id', 'topic', 'created_at']
+
+class UserInterestCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserInterest
+        fields = ['topic']
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
@@ -61,6 +78,8 @@ class UserSerializer(serializers.ModelSerializer):
     profile_picture = serializers.ImageField(required=False, allow_null=True)
     follower_count = serializers.SerializerMethodField()
     following_count = serializers.SerializerMethodField()
+    interests = UserInterestSerializer(many=True, read_only=True)
+    is_following = serializers.SerializerMethodField()
     
     class Meta:
         model = CustomUser
@@ -68,7 +87,9 @@ class UserSerializer(serializers.ModelSerializer):
             'id', 'email', 'username', 'handlename', 'first_name', 'last_name',
             'date_joined', 'is_active', 'is_staff', 'profile_picture', 'bio',
             'tiktok', 'discord', 'youtube', 'reddit', 'twitch', 
-            'facebook', 'twitter', 'instagram', 'github', 'linkedin','follower_count', 'following_count'
+            'facebook', 'twitter', 'instagram', 'github', 'linkedin',
+            'follower_count', 'following_count', 'has_completed_onboarding', 'interests',
+            'is_following'
         ]
         read_only_fields = ['id', 'date_joined']
 
@@ -77,6 +98,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_following_count(self, obj):
         return obj.following_count
+
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return FollowerRelationship.objects.filter(follower=request.user, following=obj).exists()
+        return False
 
 class FollowerRelationshipSerializer(serializers.ModelSerializer):
     follower = serializers.StringRelatedField(read_only=True)
