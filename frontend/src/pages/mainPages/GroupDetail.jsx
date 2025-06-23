@@ -226,7 +226,7 @@ const GroupDetail = () => {
     const isPending = userMembership?.status === 'pending';
 
     return (
-        <main className='flex flex-col items-start gap-3 w-full min-h-screen pt-[90px] bg-dark900'>
+        <main className='flex flex-col items-start gap-3 w-full min-h-screen pt-[90px] px-2 bg-dark900'>
             <div className="w-full md:w-[95%] mx-auto gap-0 flex flex-col items-start justify-start">
                 {/* Header */}
                 <div className="flex items-center justify-between w-full m-1">
@@ -467,7 +467,7 @@ const GroupDetail = () => {
                         </div>
                     </div>
                 </div>
-                <div className="groupnav w-full flex items-center justify-start gap-10 mt-3 px-0 relative">
+                <div className="groupnav w-full flex items-center justify-between md:justify-start lg:gap-10 mt-3 px-0 relative">
                     <Link 
                         to="" 
                         onClick={() => setActiveTab('posts')}

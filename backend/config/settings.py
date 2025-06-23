@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     
     'users.apps.UsersConfig',
     'groups.apps.GroupsConfig',
+    'posts.apps.PostsConfig'
 ]
 
 APPEND_SLASH = False
